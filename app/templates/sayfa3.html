@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dinamik Ana Sayfa</title>
+  <link rel="stylesheet" href="sayfa3.css">
+</head>
+<body>
+  <div class="login-container">
+    <h1>Hoş Geldiniz</h1>
+    <form id="roleForm">
+      <select id="roleSelect">
+        <option value="hasta">Hasta Görünümü</option>
+        <option value="doktor">Doktor Görünümü</option>
+        <option value="admin">Admin Görünümü</option>
+      </select>
+      <div id="roleOptions"></div>
+      <button type="submit" class="login-btn">Giriş Yap</button>
+    </form>
+    <div class="extra-options">
+      <p><a href="#">Şifremi Unuttum</a></p>
+    </div>
+    <div class="error-msg" id="errorMsg"></div>
+  </div>
+
+  <script src="sayfa3.js"></script>
+</body>
+</html>

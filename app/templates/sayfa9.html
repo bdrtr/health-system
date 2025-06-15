@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tedavi Planı</title>
+  <link rel="stylesheet" href="sayfa9.css">
+</head>
+<body>
+  <div class="treatment-container">
+    <h1>Tedavi Planı Oluştur</h1>
+    <form id="treatmentForm">
+      <div class="form-group">
+        <label for="patientName">Hasta Adı:</label>
+        <input type="text" id="patientName" required>
+      </div>
+      <div class="form-group">
+        <label for="fractureType">Teşhis Edilen Kırık Türü:</label>
+        <input type="text" id="fractureType" required>
+      </div>
+      <div class="form-group">
+        <label for="treatmentPlan">Açıklamalı Tedavi Planı:</label>
+        <textarea id="treatmentPlan" rows="6" required></textarea>
+      </div>
+      <button type="submit" class="save-btn">Kaydet</button>
+    </form>
+    <div class="success-msg" id="successMsg"></div>
+  </div>
+
+  <script src="sayfa9.js"></script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hastalarım Sayfası</title>
+    <link rel="stylesheet" href="sayfa7.css">
+</head>
+<body>
+    <div class="patients-container">
+        <h1>Hastalarım</h1>
+        <div class="patient-card">
+            <h3>Ad Soyad: Ahmet Yılmaz</h3>
+            <p><strong>Yüklenen Son Röntgen:</strong> <img src="xray1.jpg" alt="Röntgen" class="xray-img"></p>
+            <button class="inspect-btn" data-patient-name="Ahmet Yılmaz" onclick="showPatientDetails('Ahmet Yılmaz')">İncele</button>
+        </div>
+        <div class="patient-card">
+            <h3>Ad Soyad: Ayşe Demir</h3>
+            <p><strong>Yüklenen Son Röntgen:</strong> <img src="xray2.jpg" alt="Röntgen" class="xray-img"></p>
+            <button class="inspect-btn" data-patient-name="Ayşe Demir" onclick="showPatientDetails('Ayşe Demir')">İncele</button>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="patientModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle">Hastanın Detayları</h2>
+            <p><strong>Yaş:</strong> <span id="patientAge"></span></p>
+            <p><strong>Teşhis:</strong> <span id="patientDiagnosis"></span></p>
+            <p><strong>Son Röntgen Tarihi:</strong> <span id="patientXRayDate"></span></p>
+            <img id="modalXRayImage" src="" alt="Röntgen" class="xray-img">
+        </div>
+    </div>
+
+    <script src="sayfa7.js"></script>
+</body>
+</html>

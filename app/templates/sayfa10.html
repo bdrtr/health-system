@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Profil Sayfası</title>
+  <link rel="stylesheet" href="sayfa10.css" />
+</head>
+<body>
+  <div id="profileContainer">
+    <h2>Profilim</h2>
+
+    <div class="profilePhotoSection">
+      <img src="profile-placeholder.png" alt="Profil Fotoğrafı" id="profilePhoto" />
+      <input type="file" id="changePhoto" />
+    </div>
+
+    <div class="profileInfo">
+      <label>Ad Soyad:</label>
+      <input type="text" value="Emre Yılmaz" disabled />
+
+      <label>E-posta:</label>
+      <input type="email" value="emre@example.com" disabled />
+
+      <label>Telefon:</label>
+      <input type="text" value="05551234567" disabled />
+
+      <label>Rol:</label>
+      <input type="text" value="Hasta" disabled />
+
+      <label>Yeni Şifre:</label>
+      <input type="password" placeholder="Yeni şifre girin" />
+
+      <label>Yeni Şifre Tekrar:</label>
+      <input type="password" placeholder="Şifreyi tekrar girin" />
+
+      <button class="updateBtn">Şifreyi Güncelle</button>
+      <button class="logoutBtn">Çıkış Yap</button>
+    </div>
+  </div>
+  <script src="sayfa10.js"></script>
+
+</body>
+</html>

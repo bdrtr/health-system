@@ -1,0 +1,78 @@
+body {
+    font-family: Arial, sans-serif;
+    background:  #e6f0fa; /* açık mavi */
+    padding: 40px;
+    color: #003366;
+  }
+  
+  #appointmentContainer {
+    max-width: 600px;
+    margin: auto;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0, 102, 204, 0.2);
+  }
+  
+  h2 {
+    text-align: center;
+    color: #007bff;
+    margin-bottom: 20px;
+  }
+  
+  form label {
+    font-weight: bold;
+    margin-bottom: 8px;
+    display: inline-block;
+  }
+  
+  input,
+  select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+  }
+  
+  button {
+    background: #007bff;
+    color: white;
+    padding: 10px;
+    border: none;
+    width: 100%;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  button:hover {
+    background: #005bb5;
+  }
+  
+  #appointmentsList {
+    margin-top: 30px;
+  }
+  
+  .appointment {
+    background-color: #f1f1f1;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+  }
+  
+  .appointment p {
+    margin: 5px 0;
+  }
+  
+  .appointment strong {
+    color: #007bff;
+  }
+  
+  h3 {
+    text-align: center;
+    color: #e60000; /* Kırmızı tonunda renk */
+    margin-top: 30px;
+  }
+  

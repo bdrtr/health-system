@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sistem Raporları / Log Sayfası</title>
+  <link rel="stylesheet" href="sayfa12.css" />
+</head>
+<body>
+  <div id="reportContainer">
+    <h2>Sistem Raporları</h2>
+
+    <!-- Kullanıcı Aktiviteleri -->
+    <section id="userActivities">
+      <h3>Kullanıcı Aktiviteleri</h3>
+      <table id="activitiesTable">
+        <thead>
+          <tr>
+            <th>Kullanıcı</th>
+            <th>Aktivite</th>
+            <th>Tarih</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Veriler dinamik olarak buraya gelecek -->
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Sistem Logları -->
+    <section id="systemLogs">
+      <h3>Sistem Logları</h3>
+      <table id="logsTable">
+        <thead>
+          <tr>
+            <th>Log ID</th>
+            <th>Mesaj</th>
+            <th>Tarih</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Loglar burada görünecek -->
+        </tbody>
+      </table>
+    </section>
+
+    <!-- API Cevap Süreleri ve Hata Oranı (İsteğe bağlı) -->
+    <section id="apiMetrics">
+      <h3>API Cevap Süreleri & Hata Oranı</h3>
+      <div id="apiMetricsGraph"></div> <!-- API grafiği -->
+    </section>
+
+    <!-- Rol Bazlı Kullanıcı Sayıları -->
+    <section id="roleUserCount">
+      <h3>Rol Bazlı Kullanıcı Sayıları</h3>
+      <table id="roleUserTable">
+        <thead>
+          <tr>
+            <th>Rol</th>
+            <th>Kullanıcı Sayısı</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Hasta</td>
+            <td>120</td>
+          </tr>
+          <tr>
+            <td>Doktor</td>
+            <td>50</td>
+          </tr>
+          <tr>
+            <td>Admin</td>
+            <td>10</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </div>
+
+  <script src="sayfa12.js"></script>
+</body>
+</html>

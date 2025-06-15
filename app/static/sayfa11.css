@@ -1,0 +1,122 @@
+/* Genel Stil */
+body {
+    margin: 0;
+    padding: 0;
+    background: #e6f0fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .admin-container {
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 30px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  h1 {
+    color: #007bff;
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  /* Arama kutusu */
+  input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    box-sizing: border-box;
+  }
+  
+  /* Kullanıcı Tablosu */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  
+  th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  th {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  td {
+    background-color: #f9f9f9;
+  }
+  
+  button {
+    padding: 6px 12px;
+    margin-right: 8px;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  .change-role-btn {
+    background-color: #f39c12;
+    color: white;
+    border: none;
+  }
+  
+  .edit-btn {
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+  }
+  
+  .delete-btn {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+  }
+  
+  /* Butonlar Hover Efekti */
+  button:hover {
+    opacity: 0.8;
+  }
+  
+  /* Silinen Kullanıcılar Butonu */
+  .deleted-users-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background-color: #007bff;
+    color: white;
+    border-radius: 8px;
+    font-size: 16px;
+    text-align: center;
+    text-decoration: none;
+    margin-top: 20px;
+  }
+  
+  .deleted-users-btn:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Yeni Kullanıcı Ekle Butonu */
+  #addUserBtn {
+    width: 100%;
+    padding: 12px;
+    background-color: #2ecc71;
+    color: white;
+    border-radius: 8px;
+    font-size: 16px;
+    text-align: center;
+    border: none;
+    margin-top: 20px;
+  }
+  
+  #addUserBtn:hover {
+    background-color: #27ae60;
+  }
+  

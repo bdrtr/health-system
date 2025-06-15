@@ -1,0 +1,69 @@
+/* Genel stil */
+body {
+    margin: 0;
+    padding: 0;
+    background: #e6f0fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .treatment-container {
+    width: 50%;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  h1 {
+    text-align: center;
+    color: #007bff;
+    margin-bottom: 20px;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  label {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 5px;
+  }
+  
+  input, textarea {
+    width: 100%;
+    padding: 12px;
+    font-size: 14px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+  }
+  
+  textarea {
+    resize: vertical;
+  }
+  
+  .save-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #cc0000;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  .save-btn:hover {
+    background-color: #0c4772;
+  }
+  
+  .success-msg {
+    margin-top: 15px;
+    color: green;
+    font-weight: bold;
+    text-align: center;
+  }
+  

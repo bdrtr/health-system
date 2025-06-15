@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Randevu Al</title>
+  <link rel="stylesheet" href="sayfa4.css" />
+</head>
+<body>
+  <div id="appointmentContainer">
+    <form id="appointmentForm">
+      <h2>Randevu Al</h2>
+
+      <label for="doctor">Doktor Seçin:</label>
+      <select name="doctor" id="doctor" required>
+        <option value="dr1">Dr. Ahmet Yılmaz (Dahiliye)</option>
+        <option value="dr2">Dr. Ayşe Kaya (Kadın Doğum)</option>
+        <option value="dr3">Dr. Mehmet Öz (Çocuk Doktoru)</option>
+      </select><br />
+
+      <label for="date">Tarih Seçin:</label>
+      <input type="date" name="date" id="date" required /><br />
+
+      <label for="time">Saat Seçin:</label>
+      <input type="time" name="time" id="time" required /><br />
+
+      <button type="submit">Randevu Talep Et</button>
+    </form>
+
+    <h3>Mevcut Randevularım</h3>
+    <div id="appointmentsList">
+      <div class="appointment">
+        <p><strong>Doktor:</strong> Dr. Ahmet Yılmaz</p>
+        <p><strong>Tarih:</strong> 2025-05-10</p>
+        <p><strong>Saat:</strong> 14:00</p>
+        <p><strong>Durum:</strong> Onaylandı</p>
+      </div>
+      <div class="appointment">
+        <p><strong>Doktor:</strong> Dr. Ayşe Kaya</p>
+        <p><strong>Tarih:</strong> 2025-05-12</p>
+        <p><strong>Saat:</strong> 10:00</p>
+        <p><strong>Durum:</strong> Beklemede</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="sayfa4.js"></script>
+</body>
+</html>

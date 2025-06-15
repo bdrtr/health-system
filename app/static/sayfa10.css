@@ -1,0 +1,85 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f9ff;
+    margin: 0;
+    padding: 40px;
+    color: #002244;
+  }
+  
+  #profileContainer {
+    max-width: 600px;
+    margin: auto;
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 0 15px rgba(0, 102, 204, 0.15);
+  }
+  
+  h2 {
+    text-align: center;
+    color: #007bff;
+    margin-bottom: 25px;
+  }
+  
+  .profilePhotoSection {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  #profilePhoto {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 3px solid #007bff;
+    object-fit: cover;
+    margin-bottom: 10px;
+  }
+  
+  .profileInfo label {
+    display: block;
+    margin-top: 12px;
+    font-weight: bold;
+  }
+  
+  .profileInfo input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #bbb;
+    border-radius: 6px;
+    margin-top: 5px;
+    background-color: #f9f9f9;
+  }
+  
+  .profileInfo input:disabled {
+    background-color: #eaeaea;
+    color: #666;
+  }
+  
+  button.updateBtn {
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    width: 100%;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    margin-top: 20px;
+    cursor: pointer;
+  }
+  
+  button.logoutBtn {
+    background-color: #cc0000;
+    color: white;
+    padding: 10px;
+    width: 100%;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    margin-top: 10px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    opacity: 0.9;
+  }
+  

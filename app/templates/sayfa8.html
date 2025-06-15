@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eşhis Sayfası</title>
+  <link rel="stylesheet" href="sayfa8.css" />
+</head>
+<body>
+  <div id="diagnosisContainer">
+    <h2>Teşhis Sayfası</h2>
+
+    <div class="contentRow">
+      <!-- Görüntü ve Bounding Box -->
+      <div id="imageWrapper">
+        <img src="xray_sample.jpg" alt="Röntgen Görüntüsü" id="xrayImage" />
+        <div class="boundingBox" style="top: 35%; left: 30%; width: 25%; height: 20%;"></div>
+      </div>
+
+      <!-- Yapay Zeka Sonuçları -->
+      <div id="aiResult">
+        <h3>Yapay Zekâ Analizi Sonucu</h3>
+        <p><strong>Kırık Sınıfı:</strong> Femur Kırığı</p>
+        <p><strong>Güven Skoru:</strong> 95%</p>
+      </div>
+    </div>
+
+    <!-- Doktor Manuel Teşhis -->
+    <label for="manualDiagnosis">Doktor Manuel Teşhis:</label>
+    <textarea id="manualDiagnosis" rows="4" placeholder="Manuel teşhisi buraya yazınız..."></textarea><br />
+
+    <button id="saveDiagnosisButton">Teşhisi Kaydet</button>
+    <button id="addTreatmentButton">Tedavi Planı Ekle</button>
+  </div>
+
+  <script src="sayfa8.js"></script>
+</body>
+</html>
