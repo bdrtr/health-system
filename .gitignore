@@ -1,9 +1,18 @@
-myenv
-/myenv
+# Sanal ortam klasörleri
+env/
+venv/
 myenv/
-/env
-env
+.myenv/
 
-__pycache__
-__
+# Python önbellek dosyaları
+__pycache__/
 *.pyc
+*.pyo
+*.pyd
+
+# IDE / editör dosyaları
+.vscode/
+.idea/
+
+# MacOS & Linux
+.DS_Store
