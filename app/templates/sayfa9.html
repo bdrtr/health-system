@@ -4,29 +4,28 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tedavi Planı</title>
-  <link rel="stylesheet" href="sayfa9.css">
+  <link rel="stylesheet" href="{{ url_for('static', path='/sayfa9.css') }}">
 </head>
 <body>
   <div class="treatment-container">
     <h1>Tedavi Planı Oluştur</h1>
-    <form id="treatmentForm">
+    <form id="treatmentForm" method="post" action="/treatUpdate/{{ report.id }}">
       <div class="form-group">
         <label for="patientName">Hasta Adı:</label>
-        <input type="text" id="patientName" required>
+        <input placeholder="{{ user.username }}" type="text" id="patientName" disabled>
       </div>
       <div class="form-group">
         <label for="fractureType">Teşhis Edilen Kırık Türü:</label>
-        <input type="text" id="fractureType" required>
+        <input placeholder="{{ report.diagnosis }}" type="text" id="fractureType" disabled>
       </div>
       <div class="form-group">
         <label for="treatmentPlan">Açıklamalı Tedavi Planı:</label>
-        <textarea id="treatmentPlan" rows="6" required></textarea>
+        <textarea name='treatment_plan' id="treatmentPlan" rows="6" required></textarea>
       </div>
-      <button type="submit" class="save-btn">Kaydet</button>
+      <a href="#"><button type="submit" class="save-btn">Kaydet</button></a>
     </form>
     <div class="success-msg" id="successMsg"></div>
   </div>
 
-  <script src="sayfa9.js"></script>
 </body>
 </html>

@@ -10,13 +10,25 @@
   <div class="report-container">
     <h1>Röntgen Raporlarım</h1>
     {% if reports %}
-    <div id="reportsList" class="reports-list">
-      {% for report in reports %}
-
-      <!-- Dinamik olarak raporlar buraya eklenecek -->
-
-      {% endfor %}
+    {% for report in reports %}
+    <div class="card report-card">
+        <div class="card-body">
+            <div class="d-flex justify-content-between mb-3">
+                <div class="fw-bold">Durum: <span class="status-confirmed">{{ report.state }}</span></div>
+                <div class="fw-bold">Güven Skoru: <span class="fw-normal">{{ report.score }}%</span></div>
+            </div>
+            <p><strong>Teşhis:</strong> {{ report.diagnosis }}</p>
+            <p><strong>Doktor Yorumu:</strong> {{ report.doc_advice }}</p>
+            <p><strong>Tedavi Planı:</strong> {{ report.treatment_plan }}</p>
+            <a href="#" class="d-block text-decoration-none my-3">Röntgeni Görüntüle</a>
+            <div class="d-flex align-items-center xray-visual">
+              <img src="{{ report.img }}" style="width: 400px;height: 400px;"></img>
+                <span>Röntgen Görseli</span>
+            </div>
+        </div>
     </div>
+
+    {% endfor %}
     {% else %}
       <h2>Rapor bulunamadı</h2>
     {% endif %}

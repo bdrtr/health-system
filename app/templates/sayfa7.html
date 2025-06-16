@@ -4,21 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hastalarım Sayfası</title>
-    <link rel="stylesheet" href="sayfa7.css">
+    <link rel="stylesheet" href="{{ url_for('static', path='/sayfa7.css') }}">
 </head>
 <body>
     <div class="patients-container">
         <h1>Hastalarım</h1>
-        <div class="patient-card">
-            <h3>Ad Soyad: Ahmet Yılmaz</h3>
-            <p><strong>Yüklenen Son Röntgen:</strong> <img src="xray1.jpg" alt="Röntgen" class="xray-img"></p>
-            <button class="inspect-btn" data-patient-name="Ahmet Yılmaz" onclick="showPatientDetails('Ahmet Yılmaz')">İncele</button>
-        </div>
-        <div class="patient-card">
-            <h3>Ad Soyad: Ayşe Demir</h3>
-            <p><strong>Yüklenen Son Röntgen:</strong> <img src="xray2.jpg" alt="Röntgen" class="xray-img"></p>
-            <button class="inspect-btn" data-patient-name="Ayşe Demir" onclick="showPatientDetails('Ayşe Demir')">İncele</button>
-        </div>
+        {% if patients %}
+            {% for patient in patients %}
+                <div class="patient-card">
+                    <h3>Ad Soyad: {{ patient.username }}</h3>
+                    <p><strong>Yüklenen Son Röntgen:</strong> <img src="{{ patient.mri_results[0] }}" alt="Röntgen" class="xray-img"></p>
+                    <a href="{{ url_for('SeekPatient') }}"><button class="inspect-btn">İncele</button></a>
+                </div>
+            {% endfor %}
+        {% endif %}
     </div>
 
     <!-- Modal -->
@@ -33,6 +32,5 @@
         </div>
     </div>
 
-    <script src="sayfa7.js"></script>
 </body>
 </html>

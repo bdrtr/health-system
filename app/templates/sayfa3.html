@@ -16,9 +16,9 @@
         <h5 class="text-center text-secondary mb-4">Doktor Görünümü</h5>
 
         <div class="d-grid gap-2">
-          <a href="{{ url_for('')}}" class="btn btn-warning">Hastalarım</a>
+          <a href="{{ url_for('myPatients')}}" class="btn btn-warning">Hastalarım</a>
           <a href="/doktor/randevular" class="btn btn-warning">Randevular</a>
-          <a href="" class="btn btn-warning">Rapor İncele</a>
+          <a href="{{ url_for('seekReport') }}" class="btn btn-warning">Rapor İncele</a>
           <a href="/profil" class="btn btn-warning mb-3">Profilim</a>
 
           <a href="/logout" class="btn btn-danger">Çıkış Yap</a>
@@ -36,12 +36,12 @@
         <h5 class="text-center text-secondary mb-4">Hasta Görünümü</h5>
 
         <div class="d-grid gap-2">
-          <a href="/doktor/hastalar" class="btn btn-warning">Rontgen Yükle</a>
+          <a href="{{ url_for('uploadImg') }}" class="btn btn-warning">Rontgen Yükle</a>
           <a href="{{ url_for('getRaports') }}" class="btn btn-warning">Raporlarım</a>
           <a href="{{ url_for('getAppointment') }}" class="btn btn-warning">Randevu İşlemleri</a>
-          <a href="/profil" class="btn btn-warning mb-3">Profilim</a>
+          <a href="{{ url_for('getProfile') }}" class="btn btn-warning mb-3">Profilim</a>
 
-          <a href="/giris" class="btn btn-danger">Çıkış Yap</a>
+          <a href="{{ url_for('logout') }}" class="btn btn-danger">Çıkış Yap</a>
         </div>
 
         <div class="text-center mt-3">
@@ -61,7 +61,7 @@
           <a href="/doktor/raporlar" class="btn btn-warning">Raporlar</a>
           <a href="/profil" class="btn btn-warning mb-3">Profilim</a>
 
-          <a href="/giris" class="btn btn-danger">Çıkış Yap</a>
+          <a href="{{ url_for('logout') }}" class="btn btn-danger">Çıkış Yap</a>
         </div>
 
         <div class="text-center mt-3">

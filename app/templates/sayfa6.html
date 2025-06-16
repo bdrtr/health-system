@@ -4,23 +4,25 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Röntgen Yükleme</title>
-  <link rel="stylesheet" href="sayfa6.css" />
+  <link rel="stylesheet" href="{{ url_for('static', path='/sayfa6.css') }}" />
 </head>
 <body>
-  <form id="xrayUploadForm">
+  <form id="xrayUploadForm" enctype="multipart/form-data" method="post">
     <h2>Röntgen Yükle</h2>
 
     <label for="fileInput" class="upload-btn">
-      <input type="file" id="fileInput" name="xray" accept="image/*" required />
+      <input type="file" id="fileInput" name="file" required />
       Kamera ile çek veya galeriden yükle
     </label>
     
-    <div id="imagePreviewContainer">
-      <img id="imagePreview" src="" alt="Röntgen Önizleme" style="display: none;" />
+    {% if file_location %}
+    <div id="">
+      <img id="" src="{{ file_location }}" alt="Röntgen Önizleme" style="width: 400px; height: 400px;"/>
     </div>
+    {% endif %}
 
     <button type="submit">Yükle</button>
-
+    <a href="{{ url_for('runAnly') }}"><button type="button">btn</button></a>
     <div id="uploadMessage" style="display: none;">
       <p>Yapay zekâ analizi başladı, sonucu Raporlarım’dan görebilirsiniz.</p>
     </div>
@@ -30,6 +32,5 @@
     </div>
   </form>
 
-  <script src="sayfa6.js"></script>
 </body>
 </html>

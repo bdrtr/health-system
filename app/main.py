@@ -1,6 +1,14 @@
 import datetime
+from email import contentmanager
 from email.policy import default
 from enum import Enum
+from multiprocessing import context
+import os
+from pydoc import Doc
+import shutil
+from genericpath import exists
+from urllib import request
+from fastapi import File, UploadFile
 from starlette.middleware.sessions import SessionMiddleware
 from sqlalchemy import create_engine, ForeignKey, Table, JSON, Column
 from sqlalchemy.orm import sessionmaker, DeclarativeBase, relationship
@@ -72,7 +80,11 @@ app.add_middleware(
 
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
+
+UPLOAD_DIR = 'uploads'
+os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 #--------------------------------------------Models---------------------------------------
 
@@ -413,3 +425,207 @@ async def get_raports(
 
     context = {'request' : request, 'reports' : _reports}
     return templates.TemplateResponse('sayfa5.html', context=context)
+
+
+@app.get("/uploadImg", name="uploadImg")
+async def _uploadImg(
+    request: Request,
+):
+    context = {'request' : request}
+    return templates.TemplateResponse("sayfa6.html", context)
+
+@app.post("/uploadImg", name='uploadImg')
+async def uploadImg(
+    request: Request,
+    session : Session = Depends(get_session_db),
+    file : UploadFile = File(...),
+):
+    file_location = f"{UPLOAD_DIR}/{file.filename}"
+    with open(file_location, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    _user_id = request.session.get('user_id')
+
+    _user = session.query(UserModel).filter(UserModel.id == _user_id).first()
+    
+    if _user.mri_results is None:
+        _user.mri_results = []
+
+    _user.mri_results = _user.mri_results + [file_location]
+    session.commit()
+    session.refresh(_user)
+
+    context = {'request' : request, 'file_location' : file_location}
+    return templates.TemplateResponse("sayfa6.html", context)
+
+
+@app.get('/getProfile', name="getProfile")
+async def _getProfile(
+    request : Request,
+    session : Session = Depends(get_session_db)
+):
+    
+    _user_id = request.session.get('user_id')
+    _user = session.query(UserModel).filter(UserModel.id == _user_id).first()
+
+    context = {'request' : request, 'user': _user, 'role' : 'Hasta'}
+    return templates.TemplateResponse('sayfa10.html', context = context)
+
+
+@app.post('/getProfile', name="getProfile")
+async def getProfile(
+    request: Request,
+    session : Session = Depends(get_session_db),
+    file : UploadFile = File(...),
+
+):
+    
+    _user_id = request.session.get('user_id')
+    _user = session.query(UserModel).filter(UserModel.id == _user_id).first()
+    
+    file_location = f"{UPLOAD_DIR}/{file.filename}"
+    with open(file_location, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    _user.profile_photo = file_location
+    session.commit()
+    session.refresh(_user)
+
+    context = {'request' : request, 'user': _user, 'role' : 'Hasta'}
+    return templates.TemplateResponse('sayfa10.html', context = context)
+
+
+@app.get('/logout', name='logout')
+async def logout(
+    request: Request
+):
+    
+    request.session.clear()
+    return RedirectResponse(url='/')
+
+@app.get('/docAppoint', name="docAppoint")
+async def _doc_appoint(
+    request: Request,
+    session: Session = Depends(get_session_db),
+
+):
+    _doc_id = request.session.get('user_id')
+    appointments = session.query(Appointment).filter_by(doctor_id=_doc_id).all()
+
+    context = {'request' : request, 'appointments': appointments}
+    return templates.TemplateResponse('sayfa6.html', context=context)
+
+
+@app.get('/myPatients', name="myPatients")
+async def _showPatients(
+    request : Request,
+    session: Session = Depends(get_session_db),
+):
+    _doc_id = request.session.get('user_id')
+    appointments = session.query(Appointment).filter_by(doctor_id=_doc_id).all()
+    patients = [appointment.patient for appointment in appointments]
+
+    context = {'request': request, 'patients' : patients}
+    return templates.TemplateResponse('sayfa7.html', context=context)
+
+
+@app.get('/SeekPatient', name='SeekPatient')
+async def _patientSeek(
+    request: Request,
+    session: Session = Depends(get_session_db)
+):
+    ...
+
+
+@app.get('/seekReport', name='seekReport')
+async def _seekRaport(
+    request: Request,
+    session: Session = Depends(get_session_db)
+):
+    _doc_id = request.session.get('user_id')
+    reports = session.query(RaportModel).filter_by(doctor_id=_doc_id).all() #doktorun raporları
+    patients = [report.patient for report in reports] #raporların sahibi hastalar
+
+    context = {'request': request, 'reports' : reports, 'patients' : list(set(patients))}
+    return templates.TemplateResponse('sayfa8.html', context=context)
+
+
+@app.get('/runAnly', name='runAnly')
+def _runAnly(
+    request: Request,
+    session: Session = Depends(get_session_db)
+):
+    _user_id = request.session.get('user_id')
+    ###gerekli işlemler aslında
+    _user = session.query(UserModel).filter(UserModel.id == _user_id).first()
+
+    _doctor_id =_user.appointments[0].doctor_id
+
+    new_report = RaportModel(
+        doctor_id = _doctor_id,
+        patient_id = _user_id,
+        diagnosis = 'Kırık',
+        doc_advice = 'istirahat',
+        treatment_plan = 'ayda 3 kez doktor kontorlu',
+        score = 73,
+        img = _user.mri_results[-1],
+        state = stateRaport.detect.value,
+    )
+
+    session.add(new_report)
+    session.commit()
+    session.refresh(_user)
+
+    context = {'request': request}
+
+    return RedirectResponse(url='/getRaports', status_code=303)
+
+    
+@app.post('/updateDiagno/{report_id}', name="updateDiagno")
+async def _updateDiagno(
+    report_id :int ,
+    request: Request,
+    session: Session = Depends(get_session_db),
+    diagnosis: str = Form(...),
+
+):
+    _report = session.query(RaportModel).filter(RaportModel.id == report_id).first()
+    _report.diagnosis = diagnosis
+
+    session.commit()
+    session.refresh(_report)
+
+    return RedirectResponse(url='/seekReport', status_code=303)
+
+
+
+@app.get('/treatPlan/{user_id}/{report_id}', name='treatPlan')
+async def _treatPlan(
+    request: Request,
+    user_id : int,
+    report_id : int,
+    session : Session = Depends(get_session_db)
+):
+    _user = session.query(UserModel).filter(UserModel.id == user_id).first()
+    _report = session.query(RaportModel).filter(RaportModel.id == report_id).first()
+
+    context = {'request' : request, 'user' : _user, 'report' : _report}
+    return templates.TemplateResponse('sayfa9.html', context=context)
+
+
+@app.post('/treatUpdate/{report_id}', name="treatUpdate")
+async def _treatUpdate(
+    report_id :int ,
+    request: Request,
+    session: Session = Depends(get_session_db),
+    treatment_plan: str = Form(...),
+
+):
+    print(treatment_plan)
+    _report = session.query(RaportModel).filter(RaportModel.id == report_id).first()
+    _report.treatment_plan = treatment_plan
+
+    session.commit()
+    session.refresh(_report)
+
+    return RedirectResponse(url='/seekReport', status_code=303)
