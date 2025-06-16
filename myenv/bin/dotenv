@@ -1,4 +1,4 @@
-#!/home/bedir/Documents/vsCode/Bitirme-backend/myenv/bin/python3
+#!/home/bedir/Documents/vsCode/health-system/myenv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys

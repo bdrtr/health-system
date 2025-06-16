@@ -9,11 +9,11 @@
 <body>
   <div class="login-container">
     <h1>Kemik Kırık Tespiti</h1>
-    <form id="loginForm">
-      <input type="email" id="email" placeholder="E-posta adresiniz" required />
-      <input type="password" id="password" placeholder="Şifre" required />
+    <form id="/" method="post">
+      <input type="email" id="email" name='email' placeholder="E-posta adresiniz" required />
+      <input type="password" id="password" name="password" placeholder="Şifre" required />
 
-      <select id="role" required>
+      <select id="role" name='role' required>
         <option disabled selected value="">Rol Seçin</option>
         <option value="Hasta">Hasta</option>
         <option value="Doktor">Doktor</option>
@@ -32,6 +32,5 @@
     </form>
   </div>
 
-  <script src="{{ url_for('static', path='/sayfa1.js') }}"></script>
 </body>
 </html>

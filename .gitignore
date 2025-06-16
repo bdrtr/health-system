@@ -1,0 +1,9 @@
+myenv
+/myenv
+myenv/
+/env
+env
+
+__pycache__
+__
+*.pyc

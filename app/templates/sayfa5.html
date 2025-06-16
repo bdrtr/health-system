@@ -4,16 +4,23 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Raporlarım</title>
-  <link rel="stylesheet" href="sayfa5.css">
+  <link rel="stylesheet" href="{{ url_for('static', path='/sayfa5.css') }}">
 </head>
 <body>
   <div class="report-container">
     <h1>Röntgen Raporlarım</h1>
+    {% if reports %}
     <div id="reportsList" class="reports-list">
+      {% for report in reports %}
+
       <!-- Dinamik olarak raporlar buraya eklenecek -->
+
+      {% endfor %}
     </div>
+    {% else %}
+      <h2>Rapor bulunamadı</h2>
+    {% endif %}
   </div>
 
-  <script src="sayfa5.js"></script>
 </body>
 </html>

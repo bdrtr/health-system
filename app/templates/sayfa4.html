@@ -4,46 +4,47 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Randevu Al</title>
-  <link rel="stylesheet" href="sayfa4.css" />
+  <link rel="stylesheet" href="{{ url_for('static', path='/sayfa4.css') }}" />
 </head>
 <body>
   <div id="appointmentContainer">
-    <form id="appointmentForm">
+    <form id="/getAppointment" method="post">
       <h2>Randevu Al</h2>
-
-      <label for="doctor">Doktor Seçin:</label>
-      <select name="doctor" id="doctor" required>
-        <option value="dr1">Dr. Ahmet Yılmaz (Dahiliye)</option>
-        <option value="dr2">Dr. Ayşe Kaya (Kadın Doğum)</option>
-        <option value="dr3">Dr. Mehmet Öz (Çocuk Doktoru)</option>
-      </select><br />
+      {% if docs %}
+        <label for="doctor">Doktor Seçin:</label>
+        <select name="doctor_id" id="doctor" required>
+          {% for doc in docs %}
+            <option value="{{ doc.id }}">{{ doc.username }} ({{ doc.profiency }})</option>
+          {% endfor %}
+        </select><br />
+      {% else %}
+        <h2>MUSAİT DOKTOR YOK</h2>
+      {% endif %}
 
       <label for="date">Tarih Seçin:</label>
       <input type="date" name="date" id="date" required /><br />
 
       <label for="time">Saat Seçin:</label>
-      <input type="time" name="time" id="time" required /><br />
+      <input type="time" name="clock" id="time" required /><br />
 
       <button type="submit">Randevu Talep Et</button>
     </form>
 
     <h3>Mevcut Randevularım</h3>
-    <div id="appointmentsList">
-      <div class="appointment">
-        <p><strong>Doktor:</strong> Dr. Ahmet Yılmaz</p>
-        <p><strong>Tarih:</strong> 2025-05-10</p>
-        <p><strong>Saat:</strong> 14:00</p>
-        <p><strong>Durum:</strong> Onaylandı</p>
-      </div>
-      <div class="appointment">
-        <p><strong>Doktor:</strong> Dr. Ayşe Kaya</p>
-        <p><strong>Tarih:</strong> 2025-05-12</p>
-        <p><strong>Saat:</strong> 10:00</p>
-        <p><strong>Durum:</strong> Beklemede</p>
-      </div>
-    </div>
+    {% if appointments %}
+      {% for app in appointments %}
+        <div id="appointmentsList">
+          <div class="appointment">
+            {% set date_part = app.app_date_time.split(' ')[0] %}
+            {% set time_part = app.app_date_time.split(' ')[1] %}
+            <p><strong>Doktor: </strong>{{ app.doctor.username}}</p>
+            <p><strong>Alan: </strong>{{ app.doctor.profiency }}</p>
+            <p><strong>Tarih:</strong> {{ date_part }} </p>
+            <p><strong>Saat:</strong> {{ time_part }}</p>
+            <p><strong>Durum:</strong>{{ app.state }}</p>
+          </div>
+      {% endfor %}
+    {% endif %}
   </div>
-
-  <script src="sayfa4.js"></script>
 </body>
 </html>
