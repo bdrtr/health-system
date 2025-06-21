@@ -59,3 +59,5 @@ sistemi ayağa kaldırdık.
 
 **Caching:** Redis, Celery
 
+**Classification:** YoloV8
+
