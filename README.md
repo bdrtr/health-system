@@ -16,6 +16,11 @@ source myenv/bin/activate
 ```
 myenv\Scripts\Activate.ps1
 ```
+- bağımlılıkları yükle
+```
+pip install -r requirements.txt
+```
+
 - docker builder'ın çalıştığından emin ol!
 ```bash
 docker compose up -d
