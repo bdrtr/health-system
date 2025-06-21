@@ -15,8 +15,11 @@
       <input type="password" id="password" name='passwd' placeholder="Şifre" required />
       <input type="password" id="confirmPassword" name='passwd2' placeholder="Şifre Tekrar" required />
 
-      <select id="role" disabled>
-        <option selected>Hasta</option>
+      <select id="role" name='role' required>
+        <option disabled selected value="">Rol Seçin</option>
+        <option value="Hasta">Hasta</option>
+        <option value="Doktor">Doktor</option>
+        <option value="Admin">Admin</option>
       </select>
 
       <button type="submit" class="login-btn">Kayıt Ol</button>
@@ -24,6 +27,9 @@
       <div class="extra-options">
         <a href="{{ url_for('login_page') }}">Giriş sayfasına dön</a>
       </div>
+      {% if message %}
+        <div><p>{{ message }}</p></div>
+      {% endif %}
       <div class="error-msg" id="errorMsg"></div>
     </form>
   </div>

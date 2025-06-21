@@ -19,9 +19,9 @@
           <a href="{{ url_for('myPatients')}}" class="btn btn-warning">Hastalarım</a>
           <a href="/doktor/randevular" class="btn btn-warning">Randevular</a>
           <a href="{{ url_for('seekReport') }}" class="btn btn-warning">Rapor İncele</a>
-          <a href="/profil" class="btn btn-warning mb-3">Profilim</a>
+          <a href="{{ url_for('getProfile') }}" class="btn btn-warning mb-3">Profilim</a>
 
-          <a href="/logout" class="btn btn-danger">Çıkış Yap</a>
+          <a href="{{ url_for('logout') }}" class="btn btn-danger">Çıkış Yap</a>
         </div>
 
         <div class="text-center mt-3">
@@ -49,17 +49,17 @@
         </div>
       </div>
     </div>
-    {% elif role == 'admin' %}
+    {% elif role == 'Admin' %}
     <div class="container d-flex justify-content-center align-items-center vh-100">
       <div class="card shadow-lg p-4" style="width: 22rem;">
         <h2 class="text-center mb-3 text-primary">Hoş Geldiniz</h2>
         <h5 class="text-center text-secondary mb-4">Admin Görünümü</h5>
 
         <div class="d-grid gap-2">
-          <a href="/doktor/hastalar" class="btn btn-warning">Kullanıcı Yönetim</a>
-          <a href="/doktor/randevular" class="btn btn-warning">Sistem Logları</a>
+          <a href="{{ url_for('userManagement') }}" class="btn btn-warning">Kullanıcı Yönetim</a>
+          <a href="{{ url_for('getLogs') }}" class="btn btn-warning">Sistem Logları</a>
           <a href="/doktor/raporlar" class="btn btn-warning">Raporlar</a>
-          <a href="/profil" class="btn btn-warning mb-3">Profilim</a>
+          <a href="{{ url_for('getProfile') }}" class="btn btn-warning mb-3">Profilim</a>
 
           <a href="{{ url_for('logout') }}" class="btn btn-danger">Çıkış Yap</a>
         </div>

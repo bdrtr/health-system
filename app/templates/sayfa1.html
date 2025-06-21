@@ -25,10 +25,11 @@
       <div class="extra-options">
         <a href="#" id="forgot">Şifremi Unuttum</a>
         <span> / </span>
-        <a href="{{ url_for('register_page') }}" id="register">Kayıt Ol (sadece hasta)</a>
+        <a href="{{ url_for('register_page') }}" id="register">Kayıt Ol</a>
       </div>
-
-      <div class="error-msg" id="errorMsg"></div>
+      {% if error %}
+        <div class="error-msg" id="errorMsg">HATALI GİRİŞ</div>
+      {% endif %}
     </form>
   </div>
 

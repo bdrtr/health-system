@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kullanıcı Yönetimi</title>
-  <link rel="stylesheet" href="sayfa11.css">
+  <link rel="stylesheet" href="{{ url_for('static', path='/sayfa11.css') }}">
+
 </head>
 <body>
   <div class="admin-container">
@@ -23,18 +24,39 @@
         </tr>
       </thead>
       <tbody>
-        <!-- Kullanıcı listesi buraya eklenecek -->
+        {% for user in users %}
+        <tr>
+          <td>{{ user.username }}</td>
+          <td>Hasta</td>
+          <td>
+            <a href="/users/{{ user.id }}/edit" class="btn btn-sm btn-primary">Düzenle</a>
+            <form action="{{ url_for('delete', id=user.id, role='user') }}" method="post" style="display:inline;">
+              <button type="submit" class="btn btn-sm btn-danger">Sil</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+        {% for doc in doctors %}
+        <tr>
+          <td>{{ doc.username }}</td>
+          <td>Doktor</td>
+          <td>
+            <a href="/doctors/{{ doc.id }}/edit" class="btn btn-sm btn-primary">Düzenle</a>
+            <form action="{{ url_for('delete', id=doc.id, role='doctor') }}" method="post" style="display:inline;">
+              <button type="submit" class="btn btn-sm btn-danger">Sil</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
       </tbody>
     </table>
 
     <!-- Silinen Kullanıcılar Butonu -->
-    <button class="deleted-users-btn" onclick="window.location.href='sayfa14.html'">Silinen Kullanıcılar</button>
+    <a id="addUserBtn" href="{{ url_for('deletedUsers') }}"><button>Silinenler</button></a>
 
    <!-- Yeni Kullanıcı Ekleme Butonu -->
-<button id="addUserBtn" onclick="window.location.href='sayfa13.html'">Yeni Kullanıcı Ekle</button>
+    <a id="addUserBtn" href="{{ url_for('addNewUser') }}"><button>Yeni Kullanıcı Ekle</button></a>
 
   </div>
-
-  <script src="sayfa11.js"></script>
 </body>
 </html>

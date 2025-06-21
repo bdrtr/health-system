@@ -21,15 +21,16 @@
     </div>
     {% endif %}
 
-    <button type="submit">Yükle</button>
+    <button style="margin-bottom: 20px" type="submit">Yükle</button>
     <a href="{{ url_for('runAnly') }}"><button type="button">btn</button></a>
     <div id="uploadMessage" style="display: none;">
       <p>Yapay zekâ analizi başladı, sonucu Raporlarım’dan görebilirsiniz.</p>
     </div>
-
-    <div id="errorMessage" style="display: none;">
-      <p style="color: red;">Yükleme başarısız! Lütfen geçerli bir format yüklediğinizden emin olun.</p>
+    {% if err %}
+    <div id="errorMessage">
+      <p style="color: red;">{{ err }}</p>
     </div>
+    {% endif %}
   </form>
 
 </body>

@@ -45,6 +45,10 @@
           </div>
       {% endfor %}
     {% endif %}
+
+    {% if error %}
+    <div><p>{{ error }}</p></div>
+    {% endif %}
   </div>
 </body>
 </html>

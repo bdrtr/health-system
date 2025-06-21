@@ -4,15 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Yeni Kullanıcı Ekle</title>
-  <link rel="stylesheet" href="sayfa13.css">
+  <link rel="stylesheet" href="{{ url_for('static', path='/sayfa13.css') }}">
 </head>
 <body>
   <div class="container">
     <h1>Yeni Kullanıcı Ekle</h1>
-    <form id="addUserForm">
+    <form id="addUserForm" method="post" action="{{ url_for('addNewUser') }}">
       <div class="form-group">
         <label for="name">Adı Soyadı:</label>
-        <input type="text" id="name" name="name" placeholder="Adı Soyadı" required>
+        <input type="text" id="name" name="username" placeholder="Adı Soyadı" required>
       </div>
       <div class="form-group">
         <label for="role">Rol:</label>
@@ -32,7 +32,6 @@
       </div>
       <button type="submit" class="submit-btn">Kaydet</button>
     </form>
-    <button class="back-btn" onclick="window.location.href='sayfa11.html'">Geri Dön</button>
   </div>
 
   <script src="sayfa13.js"></script>
