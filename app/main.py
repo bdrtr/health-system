@@ -1,33 +1,33 @@
-from contextlib import redirect_stderr
+import os
+import cv2
+import shutil
 import datetime
-from email import contentmanager
-from email.policy import default
 from enum import Enum
 from http.client import HTTPException
-from multiprocessing import context
-import os
-from pydoc import Doc
-import shutil
-from fastapi import HTTPException, status
-from fastapi import File, UploadFile
-from starlette.middleware.sessions import SessionMiddleware
-from sqlalchemy import create_engine, ForeignKey, Table, JSON, Column
-from sqlalchemy.orm import sessionmaker, DeclarativeBase, relationship
-from fastapi import FastAPI, Request
-from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy.orm import Mapped, mapped_column
-from fastapi.staticfiles import StaticFiles
-#from passlib.context import CryptContext
-from fastapi.responses import HTMLResponse
-from pydantic  import BaseModel
-from fastapi.templating import Jinja2Templates
-from fastapi import Form
-from fastapi import Depends
-from sqlalchemy.orm import Session
-from fastapi.responses import RedirectResponse
-from ultralytics import YOLO
-import cv2
+
 from typing import Annotated
+
+from fastapi import (
+    FastAPI, Request, Form, Depends, File, UploadFile, HTTPException, status
+)
+from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.templating import Jinja2Templates
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+
+from starlette.middleware.sessions import SessionMiddleware
+
+from sqlalchemy import (
+    create_engine, Column, ForeignKey, Table, JSON
+)
+from sqlalchemy.orm import (
+    DeclarativeBase, sessionmaker, Session, relationship,
+    Mapped, mapped_column
+)
+
+from ultralytics import YOLO
+from celery import Celery
+from pydantic import BaseModel
 
 #db
 DATABASE_URL="postgresql://myuser:mypasswd@localhost:5515/mydatabase"
@@ -89,6 +89,18 @@ app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 UPLOAD_DIR = 'uploads'
 os.makedirs(UPLOAD_DIR, exist_ok=True)
+
+#-------------------------------------------Redis-Celery---------------------------------
+
+celery_app = Celery(
+    'worker',
+    broker='redis://localhost:6379/0',
+    backend='redis://localhost:6379/1'
+)
+
+celery_app.conf.task_routes = {
+    "tasks.classify_image" : {'queue' : 'classification'},
+}
 
 #--------------------------------------------Models---------------------------------------
 
@@ -256,7 +268,7 @@ class Roles(Enum):
 #-----------------------------------------------API--------------------------------------
 
 
-def get_current_user(request: Request):
+def get_current_user(request: Request) -> int:
     user_id = request.session.get("user_id")
     if user_id is None:
         raise HTTPException(
@@ -490,41 +502,32 @@ async def uploadImg(
     return templates.TemplateResponse("sayfa6.html", context)
 
 
-@app.get('/getProfile', name="getProfile")
+@app.get('/getProfile/{role}', name="getProfile")
 async def _getProfile(
     request : Request,
-    session : Session = Depends(get_session_db)
+    session : Session = Depends(get_session_db),
+    _user_id: int = Depends(get_current_user),
+    role: str = 'Hasta'
 ):
     
-    _user_id = request.session.get('user_id')
-    print(_user_id)
+    role_enum = Roles[role].value
+    _user = session.query(role_enum).filter(role_enum.id == _user_id).first()
 
-    _user = session.query(UserModel).filter(UserModel.id == _user_id).first()
-    if _user :
-        context = {'request' : request, 'user': _user, 'role' : 'Hasta'}
-        return templates.TemplateResponse('sayfa10.html', context = context)
-    
-    _doctor = session.query(DoctorModel).filter(DoctorModel.id == _user_id).first()
-    if _doctor :
-        context = {'request' : request, 'user': _doctor, 'role' : 'Doktor'}
-        return templates.TemplateResponse('sayfa10.html', context = context)
-    
-    _admin = session.query(AdminModel).filter(AdminModel.id == _user_id).first()
-    if _admin :
-        context = {'request' : request, 'user': _admin, 'role' : 'Admin'}
+    if _user:
+        context = {'request' : request, 'user': _user, 'role' : Roles[role].name}
         return templates.TemplateResponse('sayfa10.html', context = context)
 
 
-@app.post('/getProfile')
+
+@app.post('/getProfile/{role}')
 async def getProfile(
     request: Request,
     session : Session = Depends(get_session_db),
     file : UploadFile = File(...),
-
+    _user_id = Depends(get_current_user),
+    role: str = 'Hasta'
 ):
-    
-    _user_id = request.session.get('user_id')
-    _user = session.query(UserModel).filter(UserModel.id == _user_id).first()
+    _user = session.query(Roles[role].value).filter(Roles[role].value.id == _user_id).first()
 
     file_location = f"{UPLOAD_DIR}/{file.filename}"
     with open(file_location, "wb") as buffer:
@@ -593,6 +596,68 @@ async def _seekRaport(
     return templates.TemplateResponse('sayfa8.html', context=context)
 
 
+@celery_app.task() # bind=True ile self objesine erişim sağlarız
+def classify_image(file_src: str, _result_file:str, report_id : int):
+
+    model = YOLO("../best.pt")
+    image = cv2.imread(file_src)
+
+    label='Nothing'
+    score=0
+
+    result = model.predict(
+        source = file_src,
+        save=False,
+    )
+
+    r = result[0]
+
+    for box in r.boxes:
+        cls_id = int(box.cls[0])            # sınıf index'i
+        label = r.names[cls_id]             # sınıf ismi
+        conf = float(box.conf[0])          # güven skoru
+        x1,y1,x2,y2 = map(int, box.xyxy[0])
+
+        cv2.rectangle(image, (x1,y1), (x2,y2), (0,0,255), 2)
+
+        score = str(conf*3) if conf < 0.3 else str(conf *1.5)
+        cv2.putText(image, score, (x1,y1 - 10),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,255), 1)
+      
+    cv2.imwrite(_result_file, image)
+    print('cv2 result ->', _result_file)
+    _score = float(score)
+    percent = int(_score * 100)
+    
+    return {
+            'label': label,
+            'percent': percent,
+            'result_image_path': _result_file,
+            'original_report_id': report_id # Raporu güncellemek için ID
+        }
+
+@celery_app.task
+def update_results(classification_results : dict):
+
+    session = SessionLocal()
+
+    report_id = classification_results.get('original_report_id')
+    label = classification_results.get('label')
+    percent = classification_results.get('percent')
+    result_image_path = classification_results.get('result_image_path')
+
+    print(report_id)
+
+    report = session.query(RaportModel).filter(RaportModel.id == report_id).all()[-1]
+    report.diagnosis = label
+    # score alanınızın tipi neyse ona göre dönüştürün
+    report.score = percent 
+    report.img = result_image_path
+    report.state = stateRaport.detect.value # Başarılı durum
+    session.commit()
+    session.refresh(report)
+    session.close()
+
 @app.get('/runAnly', name='runAnly')
 def _runAnly(
     request: Request,
@@ -612,44 +677,17 @@ def _runAnly(
 
     file_src = _user.mri_results[-1]
     file_name =  file_src.split('.')
-    _result_file = file_name[0]+'T.'+file_name[1]
+    _result_file = file_name[0]+'P.'+file_name[1]
 
-    model = YOLO("../best.pt")
-    result = model.predict(
-        source = file_src,
-        save=False,
-    )
-
-    image = cv2.imread(file_src)
-
-    r = result[0]
-
-    label='Nothing'
-    score=0
-
-    for box in r.boxes:
-        cls_id = int(box.cls[0])            # sınıf index'i
-        label = r.names[cls_id]             # sınıf ismi
-        conf = float(box.conf[0])          # güven skoru
-        x1,y1,x2,y2 = map(int, box.xyxy[0])
-
-        cv2.rectangle(image, (x1,y1), (x2,y2), (0,0,255), 2)
-
-        score = str(conf*3) if conf < 0.3 else str(conf *1.5)
-        cv2.putText(image, score, (x1,y1 - 10),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,255), 1)
-      
-    cv2.imwrite(_result_file, image)
-    _score = float(score)
-    percent = int(_score * 100)
+    print(_result_file)
 
     new_report = RaportModel(
         doctor_id = _doctor_id,
         patient_id = _user_id,
-        diagnosis = label,
+        diagnosis = 'Beklemede',
         doc_advice = 'istirahat',
         treatment_plan = 'ayda 3 kez doktor kontorlu',
-        score = percent,
+        score = 0,
         img = _result_file,
         state = stateRaport.detect.value,
     )
@@ -658,7 +696,15 @@ def _runAnly(
     session.commit()
     session.refresh(_user)
 
-    context = {'request': request}
+    # route içinde
+    #task_chain = classify_image.s(file_src, _result_file, new_report.id) | update_results.s()
+    task1 = classify_image.apply_async(args=(file_src, _result_file, new_report.id))
+
+    # 2. Sonucunu blocking olarak alma (⚠️ Bu sadece örnek, FastAPI içinde önerilmez!)
+    result = task1.get(timeout=60)
+
+    # 3. Sonucu alıp ikinci görevi başlat
+    update_results.apply_async(args=(result,))
 
     return RedirectResponse(url='/getRaports', status_code=303)
 
@@ -727,8 +773,11 @@ async def _getLogs(
     request: Request,
     session: Session = Depends(get_session_db)
 ):
+    _userlen = session.query(UserModel).count()
+    _doctorlen = session.query(DoctorModel).count()
+    _adminlen = session.query(AdminModel).count()
     
-    context = {'request' : request}
+    context = {'request' : request, 'userlen' : _userlen, 'doctorlen' : _doctorlen, 'adminlen' : _adminlen}
     return templates.TemplateResponse("sayfa12.html", context=context)
 
 @app.post('/{role}/delete/{id}', name="delete")

@@ -19,7 +19,7 @@
           <a href="{{ url_for('myPatients')}}" class="btn btn-warning">Hastalarım</a>
           <a href="/doktor/randevular" class="btn btn-warning">Randevular</a>
           <a href="{{ url_for('seekReport') }}" class="btn btn-warning">Rapor İncele</a>
-          <a href="{{ url_for('getProfile') }}" class="btn btn-warning mb-3">Profilim</a>
+          <a href="{{ url_for('getProfile' ,role='Doktor') }}" class="btn btn-warning mb-3">Profilim</a>
 
           <a href="{{ url_for('logout') }}" class="btn btn-danger">Çıkış Yap</a>
         </div>
@@ -39,7 +39,7 @@
           <a href="{{ url_for('uploadImg') }}" class="btn btn-warning">Rontgen Yükle</a>
           <a href="{{ url_for('getRaports') }}" class="btn btn-warning">Raporlarım</a>
           <a href="{{ url_for('getAppointment') }}" class="btn btn-warning">Randevu İşlemleri</a>
-          <a href="{{ url_for('getProfile') }}" class="btn btn-warning mb-3">Profilim</a>
+          <a href="{{ url_for('getProfile',role='Hasta') }}" class="btn btn-warning mb-3">Profilim</a>
 
           <a href="{{ url_for('logout') }}" class="btn btn-danger">Çıkış Yap</a>
         </div>
@@ -59,7 +59,7 @@
           <a href="{{ url_for('userManagement') }}" class="btn btn-warning">Kullanıcı Yönetim</a>
           <a href="{{ url_for('getLogs') }}" class="btn btn-warning">Sistem Logları</a>
           <a href="/doktor/raporlar" class="btn btn-warning">Raporlar</a>
-          <a href="{{ url_for('getProfile') }}" class="btn btn-warning mb-3">Profilim</a>
+          <a href="{{ url_for('getProfile',role='Admin') }}" class="btn btn-warning mb-3">Profilim</a>
 
           <a href="{{ url_for('logout') }}" class="btn btn-danger">Çıkış Yap</a>
         </div>
