@@ -594,10 +594,30 @@ async def _seekRaport(
 
     context = {'request': request, 'reports' : reports, 'patients' : list(set(patients))}
     return templates.TemplateResponse('sayfa8.html', context=context)
+    
+    
+
+@app.get('/runAnly', name='runAnly')
+def _runAnly(
+    request: Request,
+    session: Session = Depends(get_session_db)
+):
+    _user_id = request.session.get('user_id')
+    _user = session.query(UserModel).filter(UserModel.id == _user_id).first()
+    _doctor_id=None
+    if len(_user.appointments) > 0:
+        _doctor_id =_user.appointments[0].doctor_id
+    else:
+        return templates.TemplateResponse('sayfa6.html', context={
+            'request': request,
+            'err' : 'rontgen gondermek için bir randevu oluşturmalısınız'
+            })
+    
 
 
-@celery_app.task() # bind=True ile self objesine erişim sağlarız
-def classify_image(file_src: str, _result_file:str, report_id : int):
+    file_src = _user.mri_results[-1]
+    file_name =  file_src.split('.')
+    _result_file = file_name[0]+'P.'+file_name[1]
 
     model = YOLO("../best.pt")
     image = cv2.imread(file_src)
@@ -628,66 +648,15 @@ def classify_image(file_src: str, _result_file:str, report_id : int):
     print('cv2 result ->', _result_file)
     _score = float(score)
     percent = int(_score * 100)
-    
-    return {
-            'label': label,
-            'percent': percent,
-            'result_image_path': _result_file,
-            'original_report_id': report_id # Raporu güncellemek için ID
-        }
 
-@celery_app.task
-def update_results(classification_results : dict):
-
-    session = SessionLocal()
-
-    report_id = classification_results.get('original_report_id')
-    label = classification_results.get('label')
-    percent = classification_results.get('percent')
-    result_image_path = classification_results.get('result_image_path')
-
-    print(report_id)
-
-    report = session.query(RaportModel).filter(RaportModel.id == report_id).all()[-1]
-    report.diagnosis = label
-    # score alanınızın tipi neyse ona göre dönüştürün
-    report.score = percent 
-    report.img = result_image_path
-    report.state = stateRaport.detect.value # Başarılı durum
-    session.commit()
-    session.refresh(report)
-    session.close()
-
-@app.get('/runAnly', name='runAnly')
-def _runAnly(
-    request: Request,
-    session: Session = Depends(get_session_db)
-):
-    _user_id = request.session.get('user_id')
-    _user = session.query(UserModel).filter(UserModel.id == _user_id).first()
-    _doctor_id=None
-    if len(_user.appointments) > 0:
-        _doctor_id =_user.appointments[0].doctor_id
-    else:
-        return templates.TemplateResponse('sayfa6.html', context={
-            'request': request,
-            'err' : 'rontgen gondermek için bir randevu oluşturmalısınız'
-            })
-
-
-    file_src = _user.mri_results[-1]
-    file_name =  file_src.split('.')
-    _result_file = file_name[0]+'P.'+file_name[1]
-
-    print(_result_file)
 
     new_report = RaportModel(
         doctor_id = _doctor_id,
         patient_id = _user_id,
-        diagnosis = 'Beklemede',
-        doc_advice = 'istirahat',
+        diagnosis = label,
+        doc_advice = "dinlen kral",
         treatment_plan = 'ayda 3 kez doktor kontorlu',
-        score = 0,
+        score = str(percent),
         img = _result_file,
         state = stateRaport.detect.value,
     )
@@ -696,18 +665,7 @@ def _runAnly(
     session.commit()
     session.refresh(_user)
 
-    # route içinde
-    #task_chain = classify_image.s(file_src, _result_file, new_report.id) | update_results.s()
-    task1 = classify_image.apply_async(args=(file_src, _result_file, new_report.id))
-
-    # 2. Sonucunu blocking olarak alma (⚠️ Bu sadece örnek, FastAPI içinde önerilmez!)
-    result = task1.get(timeout=60)
-
-    # 3. Sonucu alıp ikinci görevi başlat
-    update_results.apply_async(args=(result,))
-
     return RedirectResponse(url='/getRaports', status_code=303)
-
     
 @app.post('/updateDiagno/{report_id}', name="updateDiagno")
 async def _updateDiagno(
