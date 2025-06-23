@@ -1,12 +1,11 @@
 import os
 import cv2
+from re import S
 import shutil
 import datetime
 from enum import Enum
 from http.client import HTTPException
-
 from typing import Annotated
-
 from fastapi import (
     FastAPI, Request, Form, Depends, File, UploadFile, HTTPException, status
 )
@@ -190,7 +189,6 @@ class DoctorModel(Base):
         secondary=doctor_patient,
         back_populates = "doctors"
     )
-
     appointments = relationship("Appointment", back_populates="doctor")
     reports = relationship('RaportModel', back_populates='doctor')
     
@@ -512,11 +510,10 @@ async def _getProfile(
     
     role_enum = Roles[role].value
     _user = session.query(role_enum).filter(role_enum.id == _user_id).first()
-
     if _user:
         context = {'request' : request, 'user': _user, 'role' : Roles[role].name}
+        
         return templates.TemplateResponse('sayfa10.html', context = context)
-
 
 
 @app.post('/getProfile/{role}')
@@ -530,6 +527,7 @@ async def getProfile(
     _user = session.query(Roles[role].value).filter(Roles[role].value.id == _user_id).first()
 
     file_location = f"{UPLOAD_DIR}/{file.filename}"
+
     with open(file_location, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
@@ -537,7 +535,7 @@ async def getProfile(
     session.commit()
     session.refresh(_user)
 
-    context = {'request' : request, 'user': _user, 'role' : 'Hasta'}
+    context = {'request' : request, 'user': _user, 'role' : Roles[role].name}
     return templates.TemplateResponse('sayfa10.html', context = context)
 
 
@@ -574,13 +572,6 @@ async def _showPatients(
     context = {'request': request, 'patients' : patients}
     return templates.TemplateResponse('sayfa7.html', context=context)
 
-
-@app.get('/SeekPatient', name='SeekPatient')
-async def _patientSeek(
-    request: Request,
-    session: Session = Depends(get_session_db)
-):
-    ...
 
 
 @app.get('/seekReport', name='seekReport')
@@ -645,7 +636,6 @@ def _runAnly(
                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,255), 1)
       
     cv2.imwrite(_result_file, image)
-    print('cv2 result ->', _result_file)
     _score = float(score)
     percent = int(_score * 100)
 
@@ -816,3 +806,42 @@ async def _addNewUser(
         
     context = {'request' : request}
     return RedirectResponse(url='/userManagement', status_code=303)
+
+
+
+@app.get('/activateAppList/{type}', name="activateAppList")
+async def _activateReport(
+    request : Request,
+    session : Session = Depends(get_session_db),
+    user_id = Depends(get_current_user),
+    type : str = 'Admin'
+):
+    if type == 'Doktor':
+        _appointments = session.query(Appointment).filter(Appointment.doctor_id == user_id)
+    else:
+        _appointments = session.query(Appointment).all()
+
+    context = {'request': request, 'appointments' : _appointments}
+    return templates.TemplateResponse('sayfa15.html', context=context)
+
+
+@app.post('/activateApp/{app_id}', name='activateApp')
+async def _activateApp(
+    request: Request,
+    session: Session = Depends(get_session_db),
+    app_id: int = 0
+):
+    # Randevu var mı kontrolü
+    _app = session.query(Appointment).filter(Appointment.id == app_id).first()
+    if not _app:
+        raise HTTPException(status_code=404, detail="Randevu bulunamadı")
+
+    # Zaten aktifse tekrar güncelleme yapma
+    if _app.state == stateAppointment.active.value:
+        return {"message": "Zaten aktif durumda", "appointment_id": app_id}
+
+    # Randevuyu aktifleştir
+    _app.state = stateAppointment.active.value
+    session.commit()  # session.add gerekmez, zaten takipte
+
+    return RedirectResponse(url='/activateAppList/Doktor', status_code = 303)

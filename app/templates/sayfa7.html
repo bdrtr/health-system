@@ -14,7 +14,7 @@
                 <div class="patient-card">
                     <h3>Ad Soyad: {{ patient.username }}</h3>
                     <p><strong>Yüklenen Son Röntgen:</strong> <img src="{{ patient.mri_results[0] }}" alt="Röntgen" class="xray-img"></p>
-                    <a href="{{ url_for('SeekPatient') }}"><button class="inspect-btn">İncele</button></a>
+                    <a href="{{ url_for('seekReport') }}"><button class="inspect-btn" type="button">İncele</button></a>
                 </div>
             {% endfor %}
         {% endif %}
